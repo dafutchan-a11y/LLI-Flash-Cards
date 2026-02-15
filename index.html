@@ -1,207 +1,434 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Flashcards (Single File)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hospitality Management Flashcards</title>
   <style>
-    :root{--brand-primary:#0661aa;--brand-secondary:#5AC8DA;--brand-accent:#A9CA3F;--brand-dark:#0d3b5d;--text:#111;--surface:#fff;--radius:12px;--space:12px;--space-lg:20px}
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:var(--surface)}
-    .container{max-width:880px;margin:0 auto;padding:var(--space-lg)}
-    .header{display:flex;align-items:center;justify-content:space-between;gap:var(--space)}
-    .brand-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--brand-secondary);color:#003;font-weight:600}
-    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--brand-primary)}
-    .controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--space)}
-    .controls button,.controls label{padding:8px 12px;border-radius:8px;border:1px solid #ccc;background:#fff}
-    .controls button.primary{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
-    .card{position:relative;width:100%;min-height:280px;border:1px solid #e3e5e7;border-radius:var(--radius);background:#fff;padding:20px;box-shadow:0 6px 30px rgba(0,0,0,.05);margin-top:18px}
-    .face[hidden]{display:none}
-    .media{margin:10px 0}
-    img{max-width:100%;height:auto;border-radius:8px}
-    audio{width:100%;margin-top:10px}
-    .nav{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-    .progress{font-size:.9rem;color:#333}
-    :focus-visible{outline:3px solid #000;outline-offset:2px}
-    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+    :root{
+      --brand:#0661aa;
+      --bg:#f5f7fb;
+      --card-bg:#ffffff;
+      --text:#1c2530;
+      --muted:#5b6b7a;
+      --shadow: 0 10px 24px rgba(12, 24, 47, 0.12);
+      --radius:16px;
+      --radius-sm:12px;
+      --focus:#0d7fe8;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+      background: linear-gradient(180deg, #f7f9fc 0%, #eef3f9 100%);
+      color:var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header */
+    header{
+      background:var(--brand);
+      color:#fff;
+      padding:18px 20px;
+      box-shadow: 0 4px 18px rgba(6,97,170,0.25);
+      position: sticky;
+      top:0;
+      z-index: 5;
+    }
+    .wrap{
+      max-width: 980px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .title{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:700;
+      letter-spacing:0.2px;
+    }
+    .title .logo{
+      width:28px; height:28px;
+      display:inline-flex; align-items:center; justify-content:center;
+      border:2px solid rgba(255,255,255,0.9);
+      border-radius:10px;
+      font-size:14px; font-weight:800;
+      color:#fff;
+    }
+    .subtitle{
+      opacity:0.9;
+      font-size:14px;
+    }
+
+    /* Main layout */
+    main{
+      max-width: 980px;
+      margin: 28px auto 40px;
+      padding: 0 16px;
+    }
+    .board{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-items:center;
+      justify-items:center;
+    }
+
+    /* Card area */
+    .stage{
+      width: min(680px, 100%);
+      perspective: 1200px;
+    }
+    .card{
+      position: relative;
+      width: 100%;
+      min-height: clamp(280px, 48vw, 360px);
+      border-radius: var(--radius);
+      transform-style: preserve-3d;
+      transition: transform 640ms cubic-bezier(.2,.8,.2,1), box-shadow 240ms ease;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      user-select: none;
+      background: transparent;
+      outline: none;
+    }
+    .card:focus-visible{
+      box-shadow: 0 0 0 4px rgba(13,127,232,0.28), var(--shadow);
+    }
+    .card.flipped{
+      transform: rotateY(180deg);
+    }
+
+    .face{
+      position:absolute;
+      inset:0;
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      display:flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 26px;
+    }
+    .face.back{
+      transform: rotateY(180deg);
+    }
+    .badge{
+      align-self:flex-start;
+      background: #eaf4ff;
+      color: #0a5fb9;
+      border:1px solid #d3e9ff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      text-transform:uppercase;
+      margin-bottom: 12px;
+    }
+    .front h2, .back h2{
+      margin: 6px 0 8px;
+      font-size: clamp(20px, 2.8vw, 28px);
+      line-height: 1.2;
+    }
+    .content{
+      font-size: clamp(15px, 2.2vw, 17px);
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .hint{
+      position: absolute;
+      bottom: 14px;
+      right: 18px;
+      font-size: 12px;
+      color: #6b7b8b;
+      opacity: 0.9;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 6px 10px;
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+    }
+
+    /* Controls */
+    .controls{
+      width: min(680px, 100%);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .left, .right{
+      display:flex; align-items:center; gap:10px;
+    }
+    .counter{
+      font-weight:700;
+      color:#243140;
+      background:#fff;
+      border:1px solid #e9eef5;
+      padding:8px 12px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(10,23,55,0.06);
+    }
+
+    button.nav{
+      appearance: none;
+      border: 1px solid #d8e4f3;
+      color: #0c2a47;
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(12,24,47,0.08);
+      transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+    button.nav:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(12,24,47,0.12);
+      border-color:#cfe0f5;
+    }
+    button.nav:active{
+      transform: translateY(0);
+      box-shadow: 0 6px 14px rgba(12,24,47,0.10);
+    }
+    button.nav:disabled{
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .primary{
+      background: var(--brand);
+      color:#fff;
+      border-color: #03579a;
+    }
+    .primary:hover{
+      border-color:#024b86;
+    }
+
+    /* Footer note */
+    .note{
+      text-align:center;
+      color:#5d6d7c;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 520px){
+      .subtitle{ display:none; }
+      .hint{ display:none; }
+      .controls{ flex-direction: column; align-items: stretch; }
+      .left, .right{ justify-content: space-between; }
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <header class="header" role="banner">
-    <div class="brand-chip" aria-label="Brand theme"><span class="brand-dot"></span><span id="brandName">Brand</span></div>
-    <div class="controls" role="toolbar" aria-label="Controls">
-      <button class="primary" id="flipBtn" aria-controls="card" aria-label="Flip card (space)">Flip (Space)</button>
-      <button id="prevBtn" aria-label="Previous card (Left Arrow)">Prev</button>
-      <button id="nextBtn" aria-label="Next card (Right Arrow)">Next</button>
-      <label><input type="checkbox" id="shuffleToggle"> Shuffle</label>
-      <label><input type="checkbox" id="knownToggle"> Mark Known</label>
+  <header role="banner">
+    <div class="wrap" aria-label="Header">
+      <div class="title" aria-label="App title">
+        <div class="logo" aria-hidden="true">HC</div>
+        <div>
+          <div>Hospitality Management Flashcards</div>
+          <div class="subtitle">Click the card to flip · Use Previous/Next or ← → keys</div>
+        </div>
+      </div>
+      <div class="counter" id="counter" aria-live="polite">Card 1 of 10</div>
     </div>
   </header>
 
   <main role="main">
-    <article id="card" class="card" role="group" aria-roledescription="flashcard" aria-label="Flashcard">
-      <div id="front" class="face" aria-label="Front" tabindex="0"></div>
-      <div id="back" class="face" aria-label="Back" hidden tabindex="0"></div>
-    </article>
-    <div class="nav">
-      <div class="progress" id="progress" aria-live="polite"></div>
-      <div class="mode" id="modeLabel"></div>
-    </div>
-    <div id="status" aria-live="polite" style="min-height:1em"></div>
+    <section class="board" aria-label="Flashcard Board">
+      <!-- Card Stage -->
+      <div class="stage">
+        <div id="card" class="card" role="button" tabindex="0" aria-pressed="false" aria-label="Flashcard. Click or press Enter/Space to flip.">
+          <article class="face front" aria-hidden="false">
+            <span class="badge">Front</span>
+            <h2 id="front-title">Loading…</h2>
+            <p class="content" id="front-body"></p>
+            <div class="hint" aria-hidden="true">Click to flip</div>
+          </article>
+          <article class="face back" aria-hidden="true">
+            <span class="badge">Back</span>
+            <h2 id="back-title">Loading…</h2>
+            <p class="content" id="back-body"></p>
+            <div class="hint" aria-hidden="true">Click to flip back</div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls" aria-label="Navigation controls">
+        <div class="left">
+          <button class="nav" id="prevBtn" type="button" aria-label="Previous card">
+            ◀ Previous
+          </button>
+          <button class="nav primary" id="nextBtn" type="button" aria-label="Next card">
+            Next ▶
+          </button>
+        </div>
+        <div class="right">
+          <span class="note">Tip: Press <strong>Space</strong> to flip · Use <strong>←</strong>/<strong>→</strong> to navigate</span>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="note" role="contentinfo" style="margin-top:20px;font-size:.85rem;color:#555">
-    Tip: Space to flip, Left/Right to navigate, K to toggle Known.
-  </footer>
-</div>
-
-<!-- Optional: embed a deck directly by placing JSON inside this tag.
-<script id="deck" type="application/json">{"id":"embedded","title":"Demo","cards":[{"front_html":"Term","back_html":"Definition"}]}</script>
--->
-
-<script>
-(function(){
-  const BRANDS = {
-    aolcc:{name:'Academy of Learning College (AOLCC)',colors:{primary:'#EA7024',secondary:'#5AC8DA',accent:'#A9CA3F',dark:'#0d3b5d'}},
-    ptg:{name:'Pittman Training (PTG)',colors:{primary:'#0661aa',secondary:'#a9ca48',accent:'#EA7024',dark:'#0d3b5d'}}
-  };
-  const qs = new URLSearchParams(location.search);
-  const theme = (qs.get('theme')||'aolcc').toLowerCase();
-  const mode = (qs.get('mode')||'final').toLowerCase();
-  const count = parseInt(qs.get('count')||'5',10);
-  const deckUrl = qs.get('deckUrl'); // URL to a JSON deck
-  document.getElementById('brandName').textContent = (BRANDS[theme]||BRANDS.aolcc).name;
-  applyBrand(BRANDS[theme]||BRANDS.aolcc);
-
-  const els = {
-    front: document.getElementById('front'),
-    back: document.getElementById('back'),
-    progress: document.getElementById('progress'),
-    modeLabel: document.getElementById('modeLabel'),
-    status: document.getElementById('status'),
-    flipBtn: document.getElementById('flipBtn'),
-    prevBtn: document.getElementById('prevBtn'),
-    nextBtn: document.getElementById('nextBtn'),
-    shuffleToggle: document.getElementById('shuffleToggle'),
-    knownToggle: document.getElementById('knownToggle'),
-  };
-
-  const state = { deck:{title:'',cards:[]}, order:[], index:0, showBack:false, known:new Set() };
-
-  init();
-
-  async function init(){
-    // Load deck from deckUrl param or embedded <script id="deck">
-    let deck;
-    try{
-      if(deckUrl){ deck = await (await fetch(deckUrl)).json(); }
-      else{
-        const tag = document.getElementById('deck');
-        if(tag) deck = JSON.parse(tag.textContent);
+  <script>
+    // ---- Data: 10 Hospitality Management Flashcards ----
+    const CARDS = [
+      {
+        frontTitle: "RevPAR",
+        frontBody: "What is Revenue per Available Room (RevPAR)?",
+        backTitle: "RevPAR (Revenue per Available Room)",
+        backBody: "Measures room revenue performance. Formula: RevPAR = Room Revenue ÷ Available Rooms, or ADR × Occupancy Rate."
+      },
+      {
+        frontTitle: "ADR",
+        frontBody: "Define Average Daily Rate (ADR).",
+        backTitle: "ADR (Average Daily Rate)",
+        backBody: "The average price paid per occupied room. Formula: ADR = Room Revenue ÷ Number of Rooms Sold."
+      },
+      {
+        frontTitle: "Occupancy Rate",
+        frontBody: "How do you calculate Occupancy Rate?",
+        backTitle: "Occupancy Rate",
+        backBody: "Indicates utilization of available rooms. Formula: Occupancy = Rooms Sold ÷ Rooms Available (usually as a %)."
+      },
+      {
+        frontTitle: "Front Office vs. Back of House",
+        frontBody: "What’s the difference between Front Office and Back of House?",
+        backTitle: "Front Office vs. Back of House",
+        backBody: "Front Office is guest-facing (check-in/out, reservations, concierge). Back of House supports operations (admin, accounting, engineering, housekeeping areas)."
+      },
+      {
+        frontTitle: "Yield Management",
+        frontBody: "Explain Yield Management in hospitality.",
+        backTitle: "Yield Management",
+        backBody: "Pricing and inventory control to sell the right room, to the right guest, at the right time, for the right price, to maximize revenue."
+      },
+      {
+        frontTitle: "Guest Cycle",
+        frontBody: "What are the main stages of the Guest Cycle?",
+        backTitle: "Guest Cycle Stages",
+        backBody: "Pre-arrival (marketing & reservations), Arrival (registration), Occupancy (service & upsell), Departure (settlement & feedback)."
+      },
+      {
+        frontTitle: "Service Recovery",
+        frontBody: "What is Service Recovery and a common approach?",
+        backTitle: "Service Recovery",
+        backBody: "Actions to resolve service failures and restore guest satisfaction. Example method: LISTEN, EMPATHIZE, APOLOGIZE, RESOLVE, THANK."
+      },
+      {
+        frontTitle: "PMS",
+        frontBody: "What is a Property Management System (PMS)?",
+        backTitle: "Property Management System (PMS)",
+        backBody: "Core software that manages reservations, check-in/out, room status, billing, reporting, and often integrates with POS and channel managers."
+      },
+      {
+        frontTitle: "F&B Cost %",
+        frontBody: "How is Food & Beverage Cost Percentage calculated?",
+        backTitle: "Food & Beverage Cost Percentage",
+        backBody: "F&B Cost % = (Cost of Goods Sold ÷ F&B Sales) × 100. Helps control menu pricing and margins."
+      },
+      {
+        frontTitle: "Overbooking",
+        frontBody: "Why do hotels overbook and how do they mitigate risks?",
+        backTitle: "Overbooking Strategy",
+        backBody: "To offset expected no-shows/cancellations and protect revenue. Mitigation: accurate forecasting, walk policies, partner re-accommodation, and clear communication."
       }
-    }catch(e){ console.warn('Deck load failed', e); }
-    if(!deck){
-      deck = {id:'sample', title:'Sample Deck', cards:[
-        {front_html:'What is the capital of Canada?', back_html:'Ottawa.'},
-        {front_html:'Define photosynthesis.', back_html:'Plants convert light, CO₂, and water to sugars and O₂.'}
-      ]};
+    ];
+
+    // ---- State ----
+    let index = 0;
+    let flipped = false;
+
+    // ---- Elements ----
+    const cardEl = document.getElementById('card');
+    const frontTitleEl = document.getElementById('front-title');
+    const frontBodyEl = document.getElementById('front-body');
+    const backTitleEl = document.getElementById('back-title');
+    const backBodyEl = document.getElementById('back-body');
+    const counterEl = document.getElementById('counter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // ---- Renderers ----
+    function renderCard() {
+      const data = CARDS[index];
+      frontTitleEl.textContent = data.frontTitle;
+      frontBodyEl.textContent = data.frontBody || "";
+      backTitleEl.textContent = data.backTitle;
+      backBodyEl.textContent = data.backBody || "";
     }
-    state.deck = deck;
 
-    const key = storageKey(deck.id||'deck', mode);
-    const saved = JSON.parse(localStorage.getItem(key)||'{}');
-    if(saved.known) state.known = new Set(saved.known);
-    if(saved.index!=null) state.index = saved.index;
-
-    state.order = deck.cards.map((_,i)=>i);
-    if(mode==='final'){
-      els.modeLabel.textContent = 'Mode: Final Practice';
-      els.shuffleToggle.checked = true; shuffle(state.order);
-    } else {
-      els.modeLabel.textContent = 'Mode: Mid-course Practice';
-      els.shuffleToggle.checked = false; els.shuffleToggle.disabled = true;
-      const start = state.index||0; const end = Math.min(start+count, state.order.length);
-      state.order = state.order.slice(start,end);
+    function renderCounter() {
+      counterEl.textContent = `Card ${index + 1} of ${CARDS.length}`;
     }
 
-    bind(); render();
-  }
-
-  function bind(){
-    els.flipBtn.onclick = ()=>flip();
-    els.prevBtn.onclick = ()=>prev();
-    els.nextBtn.onclick = ()=>next();
-    els.shuffleToggle.onchange = ()=>{ if(mode==='final'){ if(els.shuffleToggle.checked){ shuffle(state.order);} else { state.order = state.deck.cards.map((_,i)=>i);} state.index=0; persist(); render(); } };
-    els.knownToggle.onchange = ()=>toggleKnown();
-    document.addEventListener('keydown', e=>{ if(e.code==='Space'){ e.preventDefault(); flip(); } else if(e.code==='ArrowRight'){ next(); } else if(e.code==='ArrowLeft'){ prev(); } else if(e.key.toLowerCase()==='k'){ toggleKnown(); } });
-  }
-
-  function render(){
-    if(state.order.length===0){ els.front.innerHTML='<p>No cards in this selection.</p>'; els.back.innerHTML=''; els.progress.textContent=''; return; }
-    const idx = Math.max(0, Math.min(state.index, state.order.length-1));
-    state.index = idx; const cardIdx = state.order[idx]; const card = state.deck.cards[cardIdx]||{};
-    els.front.innerHTML = sanitize(card.front_html||'');
-    els.back.innerHTML = sanitize(card.back_html||'');
-    els.front.hidden = state.showBack; els.back.hidden = !state.showBack;
-    els.knownToggle.checked = state.known.has(cardIdx);
-    els.progress.textContent = (idx+1)+' / '+state.order.length;
-  }
-
-  function flip(){ state.showBack = !state.showBack; render(); }
-  function next(){
-    if(state.index < state.order.length-1){ state.index++; state.showBack=false; }
-    else if(mode==='final'){
-      const unknown = state.order.filter(i=>!state.known.has(i));
-      if(unknown.length){ state.order = unknown; state.index=0; els.status.textContent='Revisiting unknown cards…'; }
-      else els.status.textContent='All cards marked known. Great work!';
-    } else {
-      els.status.textContent='Nice! Done with this practice slice.';
-      const globalKey = storageKey(state.deck.id||'deck','midcourse');
-      const saved = JSON.parse(localStorage.getItem(globalKey)||'{}');
-      const nextStart = (saved.index||0) + state.order.length;
-      localStorage.setItem(globalKey, JSON.stringify({index: Math.min(nextStart, state.deck.cards.length), known:[...state.known]}));
+    function setFlipped(isFlipped) {
+      flipped = isFlipped;
+      cardEl.classList.toggle('flipped', flipped);
+      cardEl.setAttribute('aria-pressed', String(flipped));
+      // Update aria-hidden for faces
+      cardEl.querySelector('.front').setAttribute('aria-hidden', String(flipped));
+      cardEl.querySelector('.back').setAttribute('aria-hidden', String(!flipped));
     }
-    persist(); render();
-  }
-  function prev(){ if(state.index>0){ state.index--; state.showBack=false; persist(); render(); } }
-  function toggleKnown(){ const i = state.order[state.index]; if(state.known.has(i)) state.known.delete(i); else state.known.add(i); els.status.textContent = state.known.has(i)?'Marked as Known':'Marked as Unknown'; persist(); }
 
-  function persist(){ const key = storageKey(state.deck.id||'deck', mode); localStorage.setItem(key, JSON.stringify({index:state.index, known:[...state.known]})); }
-  function storageKey(deck,mode){ return 'flashcards::'+deck+'::'+mode; }
-  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } }
+    function updateButtons() {
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === CARDS.length - 1;
+    }
 
-  function sanitize(html){
-    if(!html) return '';
-    const allowedTags = new Set(['b','strong','i','em','u','p','br','ul','ol','li','span','div','code','pre','table','thead','tbody','tr','th','td','img','audio']);
-    const allowedAttrs = {img:new Set(['src','alt','title']), audio:new Set(['src','controls','aria-label','title']), '*':new Set(['role','aria-label','aria-describedby','aria-hidden'])};
-    const doc = new DOMParser().parseFromString('<div>'+html+'</div>', 'text/html');
-    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT);
-    const purge=[]; let node;
-    while(node=walker.nextNode()){
-      const tag = node.tagName.toLowerCase();
-      if(!allowedTags.has(tag)){ purge.push(node); continue; }
-      [...node.attributes].forEach(a=>{ const n=a.name.toLowerCase(); if(!(allowedAttrs['*'].has(n) || (allowedAttrs[tag]&&allowedAttrs[tag].has(n)))) node.removeAttribute(a.name); });
-      if(tag==='img'||tag==='audio'){
-        const src=node.getAttribute('src')||'';
-        if(!(src.startsWith('https://')||src.startsWith('./')||src.startsWith('../'))) node.remove();
-        if(tag==='audio'&&!node.hasAttribute('controls')) node.setAttribute('controls','');
+    function go(delta) {
+      const newIndex = index + delta;
+      if (newIndex < 0 || newIndex >= CARDS.length) return;
+      index = newIndex;
+      setFlipped(false); // always reset to front on navigation
+      renderCard();
+      renderCounter();
+      updateButtons();
+      // Focus card for accessibility convenience
+      cardEl.focus({ preventScroll: false });
+    }
+
+    // ---- Event Handlers ----
+    cardEl.addEventListener('click', () => setFlipped(!flipped));
+    cardEl.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        setFlipped(!flipped);
+      } else if (e.key === 'ArrowRight') {
+        go(1);
+      } else if (e.key === 'ArrowLeft') {
+        go(-1);
       }
-    }
-    purge.forEach(n=>n.replaceWith(...n.childNodes));
-    return doc.body.firstElementChild.innerHTML;
-  }
+    });
 
-  function applyBrand(brand){
-    const r = document.documentElement.style;
-    r.setProperty('--brand-primary', brand.colors.primary);
-    r.setProperty('--brand-secondary', brand.colors.secondary);
-    r.setProperty('--brand-accent', brand.colors.accent);
-    r.setProperty('--brand-dark', brand.colors.dark);
-  }
-})();
-</script>
+    prevBtn.addEventListener('click', () => go(-1));
+    nextBtn.addEventListener('click', () => go(1));
+
+    // Support global arrow key nav for convenience
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT','TEXTAREA','SELECT','BUTTON'].includes(e.target.tagName)) return;
+      if (e.key === 'ArrowRight') go(1);
+      if (e.key === 'ArrowLeft') go(-1);
+      if (e.key === ' ') { e.preventDefault(); setFlipped(!flipped); }
+    });
+
+    // ---- Init ----
+    renderCard();
+    renderCounter();
+    updateButtons();
+  </script>
 </body>
 </html>
