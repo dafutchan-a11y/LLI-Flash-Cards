@@ -1,434 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hospitality Management Flashcards</title>
-  <style>
-    :root{
-      --brand:#0661aa;
-      --bg:#f5f7fb;
-      --card-bg:#ffffff;
-      --text:#1c2530;
-      --muted:#5b6b7a;
-      --shadow: 0 10px 24px rgba(12, 24, 47, 0.12);
-      --radius:16px;
-      --radius-sm:12px;
-      --focus:#0d7fe8;
+<!-- Flashcards (inline, self-contained) -->
+<div class="fcapp" id="fcapp-l2iltks3xml"></div>
+<style>
+  #fcapp-l2iltks3xml {
+    --fc-primary: #0661aa;
+    --fc-on-primary: #ffffff;
+    --fc-accent1: #a9ca48;
+    --fc-accent1-on: #0d1b1e;
+    --fc-accent2: #EA7024;
+    --fc-accent2-on: #ffffff;
+    --fc-dark: #0d3b5d;
+    --fc-border: #e5e7eb;
+    --fc-shadow1: 0 8px 18px rgba(0,0,0,0.06);
+    --fc-shadow2: 0 10px 28px rgba(0,0,0,0.12);
+    color: #0e1726;
+  }
+  #fcapp-l2iltks3xml .fc-header { background: var(--fc-primary); color: var(--fc-on-primary); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; box-shadow: var(--fc-shadow1);}
+  #fcapp-l2iltks3xml .fc-title { font-weight: 800; font-size: 18px; margin: 0; }
+  #fcapp-l2iltks3xml .fc-subtle { opacity: .85; font-size: 13px; }
+  #fcapp-l2iltks3xml .fc-card { perspective: 1200px; width: 100%; max-width: 760px; margin: 18px auto 10px; cursor: pointer; }
+  #fcapp-l2iltks3xml .fc-card-inner { position:relative; width:100%; min-height:220px; transition:transform .65s cubic-bezier(0.22,1,0.36,1); transform-style:preserve-3d; border-radius:16px; box-shadow: var(--fc-shadow2); }
+  #fcapp-l2iltks3xml .flipped .fc-card-inner { transform: rotateY(180deg); }
+  #fcapp-l2iltks3xml .fc-card-face { position:absolute; inset:0; border-radius:16px; background: var(--fc-primary); color: var(--fc-on-primary); backface-visibility:hidden; display:flex; align-items:center; justify-content:center; padding:20px; text-align:center; font-size:20px; line-height:1.5; }
+  #fcapp-l2iltks3xml .fc-back { transform: rotateY(180deg); }
+  #fcapp-l2iltks3xml .fc-nav { display:flex; align-items:center; justify-content:center; gap:10px; margin:12px 0 6px; flex-wrap:wrap; }
+  #fcapp-l2iltks3xml .fc-btn { appearance:none; border:none; border-radius:999px; padding:10px 16px; font-weight:800; font-size:14px; cursor:pointer; box-shadow: var(--fc-shadow1); transition: transform .05s ease, opacity .2s ease; }
+  #fcapp-l2iltks3xml .fc-btn:active { transform: translateY(1px); }
+  #fcapp-l2iltks3xml .fc-btn.primary   { background: var(--fc-accent2); color: var(--fc-accent2-on); }
+  #fcapp-l2iltks3xml .fc-btn.secondary { background: var(--fc-accent1); color: var(--fc-accent1-on); }
+  #fcapp-l2iltks3xml .fc-btn.ghost     { background: #fff; color: #0e1726; border: 1px solid var(--fc-border); }
+  #fcapp-l2iltks3xml .fc-counter { font-size: 13px; color: #6b7a90; }
+  #fcapp-l2iltks3xml .fc-review-row { display:flex; gap:10px; align-items:center; justify-content:center; margin-top:6px; flex-wrap:wrap; }
+  #fcapp-l2iltks3xml .fc-progress { text-align:center; font-size:13px; color:#374151; margin-top:8px; }
+  #fcapp-l2iltks3xml .fc-complete { max-width:760px; margin:18px auto; padding:22px; border-radius:14px; background:#fff; border:1px solid var(--fc-border); text-align:center; box-shadow: var(--fc-shadow1); }
+  #fcapp-l2iltks3xml .fc-complete h3 { margin:0 0 10px; }
+</style>
+<script>(function(){
+  const DATA = {"title":"Academics Team Trading Cards","mode":"practice","brand":{"primary":"#0661aa","onPrimary":"#ffffff","accent1":"#a9ca48","onAccent1":"#0d1b1e","accent2":"#EA7024","onAccent2":"#ffffff","dark":"#0d3b5d"},"cards":[{"front":"Genny","back":"Genny is awesome"},{"front":"Steven","back":"Steven is awesome"},{"front":"David","back":"He's meh"}]};
+  const root = document.getElementById('fcapp-l2iltks3xml');
+  const modeLabel = DATA.mode === 'review' ? 'Review Mode' : 'Practice Mode';
+  function escapeHtml(str){return (str||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+  function safeMultiline(text){return escapeHtml(text).replace(/\n/g,'<br>');}
+  function build(){
+    root.innerHTML='';
+    const header=document.createElement('div'); header.className='fc-header'; header.innerHTML='<h2 class="fc-title">'+escapeHtml(DATA.title)+'</h2><div class="fc-subtle">'+modeLabel+'</div>'; root.appendChild(header);
+    const complete=document.createElement('div'); complete.className='fc-complete'; complete.style.display='none'; complete.innerHTML='<h3>All set! 🎉</h3><p>You\u2019ve marked every card as <strong>Know it</strong>.</p><div class="fc-review-row"><button class="fc-btn secondary" data-restart>Restart</button></div>'; root.appendChild(complete);
+    const card=document.createElement('div'); card.className='fc-card'; card.setAttribute('role','button'); card.setAttribute('tabindex','0'); card.setAttribute('aria-label','Flashcard. Click or press Enter to flip.'); card.innerHTML='<div class="fc-card-inner"><div class="fc-card-face fc-front"></div><div class="fc-card-face fc-back"></div></div>'; root.appendChild(card);
+    const inner=card.querySelector('.fc-card-inner'); const frontEl=card.querySelector('.fc-front'); const backEl=card.querySelector('.fc-back');
+    const nav=document.createElement('div'); nav.className='fc-nav'; nav.innerHTML='<button class="fc-btn ghost" data-prev>&larr; Previous</button><button class="fc-btn primary" data-next>Next &rarr;</button><div class="fc-counter" data-counter>Card 1 of '+DATA.cards.length+'</div>'; root.appendChild(nav);
+    const prevBtn=nav.querySelector('[data-prev]'); const nextBtn=nav.querySelector('[data-next]'); const counter=nav.querySelector('[data-counter]');
+    let reviewRow, progress;
+    if (DATA.mode==='review'){
+      reviewRow=document.createElement('div'); reviewRow.className='fc-review-row'; reviewRow.innerHTML='<button class="fc-btn secondary" data-learning>Still learning</button><button class="fc-btn primary" data-known>Know it</button><button class="fc-btn ghost" data-shuffle>Shuffle</button><button class="fc-btn ghost" data-restart>Restart</button>'; root.appendChild(reviewRow);
+      progress=document.createElement('div'); progress.className='fc-progress'; progress.textContent='Unseen: '+DATA.cards.length+' | Still learning: 0 | Know it: 0'; root.appendChild(progress);
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-      background: linear-gradient(180deg, #f7f9fc 0%, #eef3f9 100%);
-      color:var(--text);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    /* Header */
-    header{
-      background:var(--brand);
-      color:#fff;
-      padding:18px 20px;
-      box-shadow: 0 4px 18px rgba(6,97,170,0.25);
-      position: sticky;
-      top:0;
-      z-index: 5;
-    }
-    .wrap{
-      max-width: 980px;
-      margin:0 auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-    }
-    .title{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-weight:700;
-      letter-spacing:0.2px;
-    }
-    .title .logo{
-      width:28px; height:28px;
-      display:inline-flex; align-items:center; justify-content:center;
-      border:2px solid rgba(255,255,255,0.9);
-      border-radius:10px;
-      font-size:14px; font-weight:800;
-      color:#fff;
-    }
-    .subtitle{
-      opacity:0.9;
-      font-size:14px;
-    }
-
-    /* Main layout */
-    main{
-      max-width: 980px;
-      margin: 28px auto 40px;
-      padding: 0 16px;
-    }
-    .board{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
-      align-items:center;
-      justify-items:center;
-    }
-
-    /* Card area */
-    .stage{
-      width: min(680px, 100%);
-      perspective: 1200px;
-    }
-    .card{
-      position: relative;
-      width: 100%;
-      min-height: clamp(280px, 48vw, 360px);
-      border-radius: var(--radius);
-      transform-style: preserve-3d;
-      transition: transform 640ms cubic-bezier(.2,.8,.2,1), box-shadow 240ms ease;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      user-select: none;
-      background: transparent;
-      outline: none;
-    }
-    .card:focus-visible{
-      box-shadow: 0 0 0 4px rgba(13,127,232,0.28), var(--shadow);
-    }
-    .card.flipped{
-      transform: rotateY(180deg);
-    }
-
-    .face{
-      position:absolute;
-      inset:0;
-      border-radius: var(--radius);
-      background: var(--card-bg);
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      display:flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 26px;
-    }
-    .face.back{
-      transform: rotateY(180deg);
-    }
-    .badge{
-      align-self:flex-start;
-      background: #eaf4ff;
-      color: #0a5fb9;
-      border:1px solid #d3e9ff;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .3px;
-      text-transform:uppercase;
-      margin-bottom: 12px;
-    }
-    .front h2, .back h2{
-      margin: 6px 0 8px;
-      font-size: clamp(20px, 2.8vw, 28px);
-      line-height: 1.2;
-    }
-    .content{
-      font-size: clamp(15px, 2.2vw, 17px);
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .hint{
-      position: absolute;
-      bottom: 14px;
-      right: 18px;
-      font-size: 12px;
-      color: #6b7b8b;
-      opacity: 0.9;
-      background: rgba(255,255,255,0.65);
-      border: 1px solid rgba(0,0,0,0.06);
-      padding: 6px 10px;
-      border-radius: 10px;
-      backdrop-filter: blur(6px);
-    }
-
-    /* Controls */
-    .controls{
-      width: min(680px, 100%);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .left, .right{
-      display:flex; align-items:center; gap:10px;
-    }
-    .counter{
-      font-weight:700;
-      color:#243140;
-      background:#fff;
-      border:1px solid #e9eef5;
-      padding:8px 12px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(10,23,55,0.06);
-    }
-
-    button.nav{
-      appearance: none;
-      border: 1px solid #d8e4f3;
-      color: #0c2a47;
-      background: #ffffff;
-      padding: 10px 14px;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      box-shadow: 0 6px 16px rgba(12,24,47,0.08);
-      transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease;
-    }
-    button.nav:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 10px 20px rgba(12,24,47,0.12);
-      border-color:#cfe0f5;
-    }
-    button.nav:active{
-      transform: translateY(0);
-      box-shadow: 0 6px 14px rgba(12,24,47,0.10);
-    }
-    button.nav:disabled{
-      opacity: 0.55;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    .primary{
-      background: var(--brand);
-      color:#fff;
-      border-color: #03579a;
-    }
-    .primary:hover{
-      border-color:#024b86;
-    }
-
-    /* Footer note */
-    .note{
-      text-align:center;
-      color:#5d6d7c;
-      font-size: 13px;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 520px){
-      .subtitle{ display:none; }
-      .hint{ display:none; }
-      .controls{ flex-direction: column; align-items: stretch; }
-      .left, .right{ justify-content: space-between; }
-    }
-  </style>
-</head>
-<body>
-  <header role="banner">
-    <div class="wrap" aria-label="Header">
-      <div class="title" aria-label="App title">
-        <div class="logo" aria-hidden="true">HC</div>
-        <div>
-          <div>Hospitality Management Flashcards</div>
-          <div class="subtitle">Click the card to flip · Use Previous/Next or ← → keys</div>
-        </div>
-      </div>
-      <div class="counter" id="counter" aria-live="polite">Card 1 of 10</div>
-    </div>
-  </header>
-
-  <main role="main">
-    <section class="board" aria-label="Flashcard Board">
-      <!-- Card Stage -->
-      <div class="stage">
-        <div id="card" class="card" role="button" tabindex="0" aria-pressed="false" aria-label="Flashcard. Click or press Enter/Space to flip.">
-          <article class="face front" aria-hidden="false">
-            <span class="badge">Front</span>
-            <h2 id="front-title">Loading…</h2>
-            <p class="content" id="front-body"></p>
-            <div class="hint" aria-hidden="true">Click to flip</div>
-          </article>
-          <article class="face back" aria-hidden="true">
-            <span class="badge">Back</span>
-            <h2 id="back-title">Loading…</h2>
-            <p class="content" id="back-body"></p>
-            <div class="hint" aria-hidden="true">Click to flip back</div>
-          </article>
-        </div>
-      </div>
-
-      <!-- Controls -->
-      <div class="controls" aria-label="Navigation controls">
-        <div class="left">
-          <button class="nav" id="prevBtn" type="button" aria-label="Previous card">
-            ◀ Previous
-          </button>
-          <button class="nav primary" id="nextBtn" type="button" aria-label="Next card">
-            Next ▶
-          </button>
-        </div>
-        <div class="right">
-          <span class="note">Tip: Press <strong>Space</strong> to flip · Use <strong>←</strong>/<strong>→</strong> to navigate</span>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    // ---- Data: 10 Hospitality Management Flashcards ----
-    const CARDS = [
-      {
-        frontTitle: "RevPAR",
-        frontBody: "What is Revenue per Available Room (RevPAR)?",
-        backTitle: "RevPAR (Revenue per Available Room)",
-        backBody: "Measures room revenue performance. Formula: RevPAR = Room Revenue ÷ Available Rooms, or ADR × Occupancy Rate."
-      },
-      {
-        frontTitle: "ADR",
-        frontBody: "Define Average Daily Rate (ADR).",
-        backTitle: "ADR (Average Daily Rate)",
-        backBody: "The average price paid per occupied room. Formula: ADR = Room Revenue ÷ Number of Rooms Sold."
-      },
-      {
-        frontTitle: "Occupancy Rate",
-        frontBody: "How do you calculate Occupancy Rate?",
-        backTitle: "Occupancy Rate",
-        backBody: "Indicates utilization of available rooms. Formula: Occupancy = Rooms Sold ÷ Rooms Available (usually as a %)."
-      },
-      {
-        frontTitle: "Front Office vs. Back of House",
-        frontBody: "What’s the difference between Front Office and Back of House?",
-        backTitle: "Front Office vs. Back of House",
-        backBody: "Front Office is guest-facing (check-in/out, reservations, concierge). Back of House supports operations (admin, accounting, engineering, housekeeping areas)."
-      },
-      {
-        frontTitle: "Yield Management",
-        frontBody: "Explain Yield Management in hospitality.",
-        backTitle: "Yield Management",
-        backBody: "Pricing and inventory control to sell the right room, to the right guest, at the right time, for the right price, to maximize revenue."
-      },
-      {
-        frontTitle: "Guest Cycle",
-        frontBody: "What are the main stages of the Guest Cycle?",
-        backTitle: "Guest Cycle Stages",
-        backBody: "Pre-arrival (marketing & reservations), Arrival (registration), Occupancy (service & upsell), Departure (settlement & feedback)."
-      },
-      {
-        frontTitle: "Service Recovery",
-        frontBody: "What is Service Recovery and a common approach?",
-        backTitle: "Service Recovery",
-        backBody: "Actions to resolve service failures and restore guest satisfaction. Example method: LISTEN, EMPATHIZE, APOLOGIZE, RESOLVE, THANK."
-      },
-      {
-        frontTitle: "PMS",
-        frontBody: "What is a Property Management System (PMS)?",
-        backTitle: "Property Management System (PMS)",
-        backBody: "Core software that manages reservations, check-in/out, room status, billing, reporting, and often integrates with POS and channel managers."
-      },
-      {
-        frontTitle: "F&B Cost %",
-        frontBody: "How is Food & Beverage Cost Percentage calculated?",
-        backTitle: "Food & Beverage Cost Percentage",
-        backBody: "F&B Cost % = (Cost of Goods Sold ÷ F&B Sales) × 100. Helps control menu pricing and margins."
-      },
-      {
-        frontTitle: "Overbooking",
-        frontBody: "Why do hotels overbook and how do they mitigate risks?",
-        backTitle: "Overbooking Strategy",
-        backBody: "To offset expected no-shows/cancellations and protect revenue. Mitigation: accurate forecasting, walk policies, partner re-accommodation, and clear communication."
-      }
-    ];
-
-    // ---- State ----
-    let index = 0;
-    let flipped = false;
-
-    // ---- Elements ----
-    const cardEl = document.getElementById('card');
-    const frontTitleEl = document.getElementById('front-title');
-    const frontBodyEl = document.getElementById('front-body');
-    const backTitleEl = document.getElementById('back-title');
-    const backBodyEl = document.getElementById('back-body');
-    const counterEl = document.getElementById('counter');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    // ---- Renderers ----
-    function renderCard() {
-      const data = CARDS[index];
-      frontTitleEl.textContent = data.frontTitle;
-      frontBodyEl.textContent = data.frontBody || "";
-      backTitleEl.textContent = data.backTitle;
-      backBodyEl.textContent = data.backBody || "";
-    }
-
-    function renderCounter() {
-      counterEl.textContent = `Card ${index + 1} of ${CARDS.length}`;
-    }
-
-    function setFlipped(isFlipped) {
-      flipped = isFlipped;
-      cardEl.classList.toggle('flipped', flipped);
-      cardEl.setAttribute('aria-pressed', String(flipped));
-      // Update aria-hidden for faces
-      cardEl.querySelector('.front').setAttribute('aria-hidden', String(flipped));
-      cardEl.querySelector('.back').setAttribute('aria-hidden', String(!flipped));
-    }
-
-    function updateButtons() {
-      prevBtn.disabled = index === 0;
-      nextBtn.disabled = index === CARDS.length - 1;
-    }
-
-    function go(delta) {
-      const newIndex = index + delta;
-      if (newIndex < 0 || newIndex >= CARDS.length) return;
-      index = newIndex;
-      setFlipped(false); // always reset to front on navigation
-      renderCard();
-      renderCounter();
-      updateButtons();
-      // Focus card for accessibility convenience
-      cardEl.focus({ preventScroll: false });
-    }
-
-    // ---- Event Handlers ----
-    cardEl.addEventListener('click', () => setFlipped(!flipped));
-    cardEl.addEventListener('keydown', (e) => {
-      if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        setFlipped(!flipped);
-      } else if (e.key === 'ArrowRight') {
-        go(1);
-      } else if (e.key === 'ArrowLeft') {
-        go(-1);
-      }
-    });
-
-    prevBtn.addEventListener('click', () => go(-1));
-    nextBtn.addEventListener('click', () => go(1));
-
-    // Support global arrow key nav for convenience
-    window.addEventListener('keydown', (e) => {
-      if (['INPUT','TEXTAREA','SELECT','BUTTON'].includes(e.target.tagName)) return;
-      if (e.key === 'ArrowRight') go(1);
-      if (e.key === 'ArrowLeft') go(-1);
-      if (e.key === ' ') { e.preventDefault(); setFlipped(!flipped); }
-    });
-
-    // ---- Init ----
-    renderCard();
-    renderCounter();
-    updateButtons();
-  </script>
-</body>
-</html>
+    const total=DATA.cards.length; let flipped=false; let index=0; let history=[0]; let order=Array.from(DATA.cards.keys()); const status=DATA.cards.map(()=> 'unseen');
+    function updateCounter(){ counter.textContent='Card '+(index+1)+' of '+total; }
+    function setCard(i){ index=i; flipped=false; card.classList.remove('flipped'); frontEl.innerHTML=safeMultiline(DATA.cards[i].front||''); backEl.innerHTML=safeMultiline(DATA.cards[i].back||''); updateCounter(); }
+    function flip(){ flipped=!flipped; card.classList.toggle('flipped', flipped); }
+    function nextPractice(){ const pos=order.indexOf(index); const nextPos=(pos+1)%total; setCard(order[nextPos]); }
+    function prevPractice(){ const pos=order.indexOf(index); const prevPos=(pos-1+total)%total; setCard(order[prevPos]); }
+    function weightedNextReview(){ const w=status.map(s=>s==='learning'?3:(s==='unseen'?2:0.8)); let sum=w.reduce((a,b)=>a+b,0); if(!sum){for(let i=0;i<w.length;i++) w[i]=1; sum=w.length;} let pick=Math.random()*sum, chosen=0; for(let i=0;i<w.length;i++){ pick-=w[i]; if(pick<=0){ chosen=i; break; } } if(total>1 && chosen===index){ const cands=order.filter(i=>i!==index); chosen=cands[Math.floor(Math.random()*cands.length)]; } return chosen; }
+    function applyProgress(){ if (DATA.mode!=='review') return; const counts=status.reduce((acc,s)=>(acc[s]++,acc),{unseen:0,learning:0,known:0}); progress.textContent='Unseen: '+counts.unseen+' | Still learning: '+counts.learning+' | Know it: '+counts.known; if (counts.known===total){ card.style.display='none'; nav.style.display='none'; reviewRow.style.display='none'; progress.style.display='none'; complete.style.display='block'; } else { card.style.display=''; nav.style.display=''; reviewRow.style.display=''; progress.style.display=''; complete.style.display='none'; } }
+    function markLearning(){ if (DATA.mode!=='review') return; status[index]='learning'; applyProgress(); }
+    function markKnown(){ if (DATA.mode!=='review') return; status[index]='known'; applyProgress(); }
+    function shuffleOrder(){ for (let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; } history=[index]; }
+    function restart(){ for (let i=0;i<status.length;i++) status[i]='unseen'; history=[ order[0] || 0 ]; setCard(order[0] || 0); applyProgress(); }
+    card.addEventListener('click', flip);
+    card.addEventListener('keydown', e=>{ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); flip(); } });
+    prevBtn.addEventListener('click', ()=>{ if (DATA.mode==='practice'){ prevPractice(); } else { if (history.length>1){ history.pop(); setCard(history[history.length-1]); } else { const pos=order.indexOf(index); const prev=order[(pos-1+total)%total]; setCard(prev); history.push(prev); } } });
+    nextBtn.addEventListener('click', ()=>{ if (DATA.mode==='practice'){ nextPractice(); } else { const nxt=weightedNextReview(); setCard(nxt); history.push(nxt); } });
+    if (DATA.mode==='review'){ reviewRow.querySelector('[data-learning]').addEventListener('click', markLearning); reviewRow.querySelector('[data-known]').addEventListener('click', markKnown); reviewRow.querySelector('[data-shuffle]').addEventListener('click', shuffleOrder); reviewRow.querySelectorAll('[data-restart]').forEach(btn=>btn.addEventListener('click', restart)); complete.querySelector('[data-restart]').addEventListener('click', restart); }
+    document.addEventListener('keydown', onKeyNav); function onKeyNav(e){ if (!root.isConnected){ document.removeEventListener('keydown', onKeyNav); return; } if (e.key==='ArrowRight'){ nextBtn.click(); } else if (e.key==='ArrowLeft'){ prevBtn.click(); } else if (e.key.toLowerCase()==='f'){ flip(); } }
+    setCard(0); applyProgress();
+  }
+  build();
+})();
+</script>
+<!-- /Flashcards -->
